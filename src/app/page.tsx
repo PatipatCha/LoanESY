@@ -24,9 +24,6 @@ export default function Home() {
         </header>
         <LoanCalculator />
       </div>
-      <footer className="text-center py-6 text-sm text-muted-foreground">
-        <p>&copy; {new Date().getFullYear()} {t('loanEase')}. {t('allRightsReserved')}.</p>
-      </footer>
     </main>
   );
 }
