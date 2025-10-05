@@ -16,7 +16,6 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DollarSign, Percent, Calendar, Loader2 } from 'lucide-react';
 
@@ -71,58 +70,14 @@ export function LoanForm({ onSubmit, isLoading }: LoanFormProps) {
   }
 
   return (
-    <Card className="shadow-lg">
-      <CardHeader>
-        <CardTitle>{t('loanDetails')}</CardTitle>
-        <CardDescription>{t('enterLoanInfo')}</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(handleFormSubmit)} className="space-y-6">
-            <FormField
-              control={form.control}
-              name="totalCourseFee"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t('totalCourseFee')}</FormLabel>
-                  <div className="relative">
-                    {language === 'en' ? (
-                      <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                    ) : (
-                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">฿</span>
-                    )}
-                    <FormControl>
-                      <Input type="number" placeholder="e.g., 180000" className="pl-8" {...field} />
-                    </FormControl>
-                  </div>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="personalFunds"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t('personalFunds')}</FormLabel>
-                  <div className="relative">
-                    {language === 'en' ? (
-                      <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                    ) : (
-                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">฿</span>
-                    )}
-                    <FormControl>
-                      <Input type="number" placeholder="e.g., 50000" className="pl-8" {...field} />
-                    </FormControl>
-                  </div>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(handleFormSubmit)} className="space-y-6">
+        <FormField
+          control={form.control}
+          name="totalCourseFee"
+          render={({ field }) => (
             <FormItem>
-              <FormLabel>{t('loanAmountRequested')}</FormLabel>
+              <FormLabel>{t('totalCourseFee')}</FormLabel>
               <div className="relative">
                 {language === 'en' ? (
                   <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -130,64 +85,100 @@ export function LoanForm({ onSubmit, isLoading }: LoanFormProps) {
                   <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">฿</span>
                 )}
                 <FormControl>
-                  <Input type="number" readOnly value={loanAmount} className="pl-8 bg-muted/50" />
+                  <Input type="number" placeholder="e.g., 180000" className="pl-8" {...field} />
                 </FormControl>
               </div>
+              <FormMessage />
             </FormItem>
-            
-            <FormField
-              control={form.control}
-              name="rate"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t('annualInterestRate')}</FormLabel>
-                  <div className="relative">
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="personalFunds"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>{t('personalFunds')}</FormLabel>
+              <div className="relative">
+                {language === 'en' ? (
+                  <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                ) : (
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">฿</span>
+                )}
+                <FormControl>
+                  <Input type="number" placeholder="e.g., 50000" className="pl-8" {...field} />
+                </FormControl>
+              </div>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormItem>
+          <FormLabel>{t('loanAmountRequested')}</FormLabel>
+          <div className="relative">
+            {language === 'en' ? (
+              <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            ) : (
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">฿</span>
+            )}
+            <FormControl>
+              <Input type="number" readOnly value={loanAmount} className="pl-8 bg-muted/50" />
+            </FormControl>
+          </div>
+        </FormItem>
+        
+        <FormField
+          control={form.control}
+          name="rate"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>{t('annualInterestRate')}</FormLabel>
+              <div className="relative">
+                <FormControl>
+                  <Input type="number" step="0.01" placeholder="e.g., 3.43" className="pr-8" {...field} />
+                </FormControl>
+                <Percent className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              </div>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="term"
+          render={({ field }) => (
+            <FormItem>
+               <FormLabel>{t('loanTerm')}</FormLabel>
+               <div className="flex gap-2">
+                <div className="relative flex-grow">
+                    <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                     <FormControl>
-                      <Input type="number" step="0.01" placeholder="e.g., 3.43" className="pr-8" {...field} />
+                    <Input type="number" placeholder={termUnit === 'years' ? 'e.g., 6' : 'e.g., 72'} className="pl-8" {...field} />
                     </FormControl>
-                    <Percent className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                  </div>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="term"
-              render={({ field }) => (
-                <FormItem>
-                   <FormLabel>{t('loanTerm')}</FormLabel>
-                   <div className="flex gap-2">
-                    <div className="relative flex-grow">
-                        <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                        <FormControl>
-                        <Input type="number" placeholder={termUnit === 'years' ? 'e.g., 6' : 'e.g., 72'} className="pl-8" {...field} />
-                        </FormControl>
-                    </div>
-                    <Tabs value={termUnit} onValueChange={(value) => setTermUnit(value as 'years' | 'months')} className="w-[150px]">
-                      <TabsList className="grid w-full grid-cols-2 h-10">
-                          <TabsTrigger value="years">{t('years')}</TabsTrigger>
-                          <TabsTrigger value="months">{t('months')}</TabsTrigger>
-                      </TabsList>
-                    </Tabs>
-                   </div>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  {t('calculating')}...
-                </>
-              ) : (
-                t('calculateLoanButton')
-              )}
-            </Button>
-          </form>
-        </Form>
-      </CardContent>
-    </Card>
+                </div>
+                <Tabs value={termUnit} onValueChange={(value) => setTermUnit(value as 'years' | 'months')} className="w-[150px]">
+                  <TabsList className="grid w-full grid-cols-2 h-10">
+                      <TabsTrigger value="years">{t('years')}</TabsTrigger>
+                      <TabsTrigger value="months">{t('months')}</TabsTrigger>
+                  </TabsList>
+                </Tabs>
+               </div>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <Button type="submit" className="w-full" disabled={isLoading}>
+          {isLoading ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              {t('calculating')}...
+            </>
+          ) : (
+            t('calculateLoanButton')
+          )}
+        </Button>
+      </form>
+    </Form>
   );
 }

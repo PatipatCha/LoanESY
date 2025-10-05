@@ -13,6 +13,12 @@ import { Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
 import { useTranslation } from '@/context/language-context';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion"
 
 export function LoanCalculator() {
     const { t } = useTranslation();
@@ -20,6 +26,7 @@ export function LoanCalculator() {
     const [schedule, setSchedule] = useState<AmortizationScheduleEntry[] | null>(null);
     const [isLoading, setIsLoading] = useState(false);
     const { toast } = useToast();
+    const [accordionValue, setAccordionValue] = useState("loan-details");
 
     const handleCalculate = async (data: LoanFormValues) => {
         setIsLoading(true);
@@ -37,6 +44,7 @@ export function LoanCalculator() {
               variant: "destructive",
             });
             setIsLoading(false);
+            setAccordionValue("loan-details");
             return;
         }
 
@@ -53,6 +61,7 @@ export function LoanCalculator() {
               variant: "destructive",
             });
             setIsLoading(false);
+            setAccordionValue("loan-details");
             return;
         }
 
@@ -70,12 +79,27 @@ export function LoanCalculator() {
         });
         setSchedule(newSchedule);
         setIsLoading(false);
+        setAccordionValue(""); // Collapse the accordion
     };
 
     return (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
             <div className="lg:col-span-1 lg:sticky top-8">
-                <LoanForm onSubmit={handleCalculate} isLoading={isLoading} />
+                 <Accordion type="single" collapsible value={accordionValue} onValueChange={setAccordionValue} className="w-full">
+                    <AccordionItem value="loan-details" className="border-none">
+                        <Card className="shadow-lg">
+                            <AccordionTrigger className="p-6 hover:no-underline">
+                                <div className="flex flex-col items-start text-left">
+                                    <h2 className="text-2xl font-semibold leading-none tracking-tight">{t('loanDetails')}</h2>
+                                    <p className="text-sm text-muted-foreground mt-1.5">{t('enterLoanInfo')}</p>
+                                </div>
+                            </AccordionTrigger>
+                            <AccordionContent className="px-6 pb-6">
+                                <LoanForm onSubmit={handleCalculate} isLoading={isLoading} />
+                            </AccordionContent>
+                        </Card>
+                    </AccordionItem>
+                </Accordion>
             </div>
             <div className="lg:col-span-2 space-y-8">
                 {isLoading && (
@@ -87,7 +111,7 @@ export function LoanCalculator() {
                     </Card>
                 )}
                 
-                <div className={cn('space-y-8 transition-all duration-500 ease-out', (summary && schedule && !isLoading) ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5 pointer-events-none')}>
+                <div className={cn('space-y-8 transition-all duration-500 ease-out', (summary && schedule && !isLoading) ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-5 pointer-events-none h-0')}>
                     {summary && <LoanSummary data={summary} />}
                     {schedule && <PaymentSchedule data={schedule} />}
                 </div>
