@@ -1,6 +1,7 @@
 
 export type LoanFormValues = {
-  amount: number;
+  totalCourseFee: number;
+  personalFunds: number;
   rate: number;
   term: number;
   termUnit: 'years' | 'months';

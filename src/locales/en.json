@@ -5,7 +5,9 @@
   "allRightsReserved": "All rights reserved",
   "loanDetails": "Student Loan Details",
   "enterLoanInfo": "Enter your student loan information below.",
-  "loanAmount": "Total Loan Amount",
+  "totalCourseFee": "Total Course Fee",
+  "personalFunds": "Personal Funds",
+  "loanAmountToCalculate": "Loan Amount to Calculate",
   "annualInterestRate": "Annual Interest Rate",
   "loanTerm": "Loan Term",
   "years": "Years",
@@ -29,5 +31,6 @@
   "interest": "Interest",
   "balance": "Balance",
   "calculationErrorTitle": "Calculation Error",
-  "calculationErrorDescription": "Could not calculate payment. Please check your inputs."
+  "calculationErrorDescription": "Could not calculate payment. Please check your inputs.",
+  "loanAmountErrorDescription": "The calculated loan amount must be positive. Please ensure the total course fee is greater than your personal funds."
 }
