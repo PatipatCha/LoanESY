@@ -1,9 +1,9 @@
 
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { LoanForm } from '@/components/loan-form';
-import type { LoanFormValues } from '@/lib/types';
+import type { LoanFormValues, SavedPlan } from '@/lib/types';
 import { LoanSummary } from '@/components/loan-summary';
 import { PaymentSchedule } from '@/components/payment-schedule';
 import { calculateMonthlyPayment, generateAmortizationSchedule } from '@/lib/loan-utils';
@@ -30,6 +30,8 @@ export function LoanCalculator() {
     const { toast } = useToast();
     const [accordionValue, setAccordionValue] = useState("loan-details");
     const isMobile = useIsMobile();
+    const [formKey, setFormKey] = useState(Date.now());
+    const [currentPlan, setCurrentPlan] = useState<SavedPlan | null>(null);
 
 
     const handleCalculate = async (data: LoanFormValues) => {
@@ -89,6 +91,11 @@ export function LoanCalculator() {
             setAccordionValue("loan-details"); // Keep it open on larger screens
         }
     };
+    
+    const onPlanSelected = (plan: SavedPlan) => {
+        setCurrentPlan(plan);
+        setFormKey(Date.now()); // Reset form with new initial values
+    };
 
     return (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
@@ -103,7 +110,14 @@ export function LoanCalculator() {
                                 </div>
                             </AccordionTrigger>
                             <AccordionContent className="px-6 pb-6">
-                                <LoanForm onSubmit={handleCalculate} isLoading={isLoading} />
+                                <LoanForm
+                                    key={formKey}
+                                    onSubmit={handleCalculate}
+                                    isLoading={isLoading}
+                                    initialValues={currentPlan?.formData}
+                                    currentPlan={currentPlan}
+                                    onPlanSelected={onPlanSelected}
+                                />
                             </AccordionContent>
                         </Card>
                     </AccordionItem>

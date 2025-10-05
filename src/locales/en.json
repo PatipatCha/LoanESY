@@ -32,5 +32,13 @@
   "balance": "Balance",
   "calculationErrorTitle": "Calculation Error",
   "calculationErrorDescription": "Could not calculate payment. Please check your inputs.",
-  "loanAmountErrorDescription": "The calculated loan amount must be positive. Please ensure the total course fee is greater than your personal funds."
+  "loanAmountErrorDescription": "The calculated loan amount must be positive. Please ensure the total course fee is greater than your personal funds.",
+  "savedPlans": "Saved Plans",
+  "selectPlan": "Select a plan",
+  "newPlan": "New Plan",
+  "saveNewPlan": "Save New Plan",
+  "planName": "Plan Name",
+  "cancel": "Cancel",
+  "save": "Save",
+  "savePlan": "Save Plan"
 }

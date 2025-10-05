@@ -23,3 +23,9 @@ export type LoanSummaryData = {
   totalInterest: number;
   totalPayment: number;
 };
+
+export type SavedPlan = {
+  id: string;
+  name: string;
+  formData: LoanFormValues;
+};
