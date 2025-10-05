@@ -25,20 +25,24 @@ interface LanguageContextType {
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
 export const LanguageProvider = ({ children }: { children: ReactNode }) => {
-  const [language, setLanguage] = useState<Language>('en');
+  const [language, setLanguage] = useState<Language>('th');
 
   useEffect(() => {
     const browserLang = navigator.language.split('-')[0];
     if (browserLang === 'th') {
       setLanguage('th');
+    } else {
+      setLanguage('en');
     }
   }, []);
 
   useEffect(() => {
-    if (language === 'th') {
-        document.documentElement.lang = 'th';
-    } else {
-        document.documentElement.lang = 'en';
+    if (typeof window !== 'undefined') {
+        if (language === 'th') {
+            document.documentElement.lang = 'th';
+        } else {
+            document.documentElement.lang = 'en';
+        }
     }
   }, [language]);
 
