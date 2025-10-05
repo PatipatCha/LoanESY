@@ -1,7 +1,7 @@
 
 import { Low } from 'lowdb';
 import { JSONFile } from 'lowdb/node';
-import { SavedPlan } from './types';
+import type { SavedPlan } from './types';
 
 type DbData = {
   plans: SavedPlan[];
