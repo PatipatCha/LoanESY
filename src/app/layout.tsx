@@ -5,7 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { LanguageProvider } from '@/context/language-context';
 
 export const metadata: Metadata = {
-  title: 'LoanEase',
+  title: 'LoanESY',
   description: 'A simple loan calculator',
 };
 
