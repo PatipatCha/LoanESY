@@ -18,7 +18,9 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@/components/ui/accordion"
+} from "@/components/ui/accordion";
+import { useIsMobile } from '@/hooks/use-mobile';
+
 
 export function LoanCalculator() {
     const { t } = useTranslation();
@@ -27,6 +29,8 @@ export function LoanCalculator() {
     const [isLoading, setIsLoading] = useState(false);
     const { toast } = useToast();
     const [accordionValue, setAccordionValue] = useState("loan-details");
+    const isMobile = useIsMobile();
+
 
     const handleCalculate = async (data: LoanFormValues) => {
         setIsLoading(true);
@@ -79,7 +83,11 @@ export function LoanCalculator() {
         });
         setSchedule(newSchedule);
         setIsLoading(false);
-        setAccordionValue(""); // Collapse the accordion
+        if (isMobile) {
+            setAccordionValue(""); // Collapse the accordion only on mobile
+        } else {
+            setAccordionValue("loan-details"); // Keep it open on larger screens
+        }
     };
 
     return (
