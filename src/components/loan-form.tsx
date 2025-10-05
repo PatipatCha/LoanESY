@@ -4,7 +4,7 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -54,6 +54,16 @@ export function LoanForm({ onSubmit, isLoading }: LoanFormProps) {
       term: 5,
     },
   });
+
+  const [totalCourseFee, personalFunds] = form.watch(['totalCourseFee', 'personalFunds']);
+  const [loanAmount, setLoanAmount] = useState(0);
+
+  useEffect(() => {
+    const fee = Number(totalCourseFee) || 0;
+    const funds = Number(personalFunds) || 0;
+    const calculatedLoanAmount = fee - funds;
+    setLoanAmount(calculatedLoanAmount > 0 ? calculatedLoanAmount : 0);
+  }, [totalCourseFee, personalFunds]);
 
 
   function handleFormSubmit(values: z.infer<typeof formSchema>) {
@@ -110,6 +120,20 @@ export function LoanForm({ onSubmit, isLoading }: LoanFormProps) {
                 </FormItem>
               )}
             />
+
+            <FormItem>
+              <FormLabel>{t('loanAmountRequested')}</FormLabel>
+              <div className="relative">
+                {language === 'en' ? (
+                  <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                ) : (
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">฿</span>
+                )}
+                <FormControl>
+                  <Input type="number" readOnly value={loanAmount} className="pl-8 bg-muted/50" />
+                </FormControl>
+              </div>
+            </FormItem>
             
             <FormField
               control={form.control}

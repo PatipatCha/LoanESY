@@ -7,7 +7,7 @@
   "enterLoanInfo": "ป้อนข้อมูลสินเชื่อเพื่อการศึกษาของคุณด้านล่าง",
   "totalCourseFee": "จำนวนเงินค่าใช้จ่ายตลอดหลักสูตร",
   "personalFunds": "จำนวนเงินส่วนตัว",
-  "loanAmountToCalculate": "จำนวนเงินกู้ที่ต้องคำนวณ",
+  "loanAmountRequested": "จำนวนเงินที่ต้องการกู้",
   "annualInterestRate": "อัตราดอกเบี้ยต่อปี",
   "loanTerm": "ระยะเวลาเงินกู้",
   "years": "ปี",
