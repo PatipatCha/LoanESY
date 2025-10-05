@@ -35,7 +35,7 @@ type LoanFormProps = {
 };
 
 export function LoanForm({ onSubmit, isLoading }: LoanFormProps) {
-  const { t } = useTranslation();
+  const { t, language } = useTranslation();
   const [termUnit, setTermUnit] = useState<'years' | 'months'>('years');
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -67,7 +67,11 @@ export function LoanForm({ onSubmit, isLoading }: LoanFormProps) {
                 <FormItem>
                   <FormLabel>{t('loanAmount')}</FormLabel>
                   <div className="relative">
-                    <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    {language === 'en' ? (
+                      <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    ) : (
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">฿</span>
+                    )}
                     <FormControl>
                       <Input type="number" placeholder="e.g., 10000" className="pl-8" {...field} />
                     </FormControl>
