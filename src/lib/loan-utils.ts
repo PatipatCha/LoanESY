@@ -74,9 +74,12 @@ export function formatCurrency(amount: number, lang: Language = 'en'): string {
 
     if (lang === 'th') {
         options.currency = 'THB';
-        // Thai Baht symbol is often not needed when locale is th-TH
-        // The browser will handle it.
-        return new Intl.NumberFormat('th-TH', options).format(amount);
+        // Using 'th-TH' locale with currency symbol.
+        // The default might not show the symbol, so we can be explicit.
+        return new Intl.NumberFormat('th-TH', { 
+            ...options, 
+            currencyDisplay: 'symbol'
+        }).format(amount);
     }
 
     options.currency = 'USD';
