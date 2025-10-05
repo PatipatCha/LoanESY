@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from 'react';
@@ -11,8 +12,10 @@ import { Card } from '@/components/ui/card';
 import { Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
+import { useTranslation } from '@/context/language-context';
 
 export function LoanCalculator() {
+    const { t } = useTranslation();
     const [summary, setSummary] = useState<LoanSummaryData | null>(null);
     const [schedule, setSchedule] = useState<AmortizationScheduleEntry[] | null>(null);
     const [isLoading, setIsLoading] = useState(false);
@@ -34,8 +37,8 @@ export function LoanCalculator() {
         
         if (isNaN(monthlyPayment) || !isFinite(monthlyPayment) || monthlyPayment <= 0) {
             toast({
-              title: "Calculation Error",
-              description: "Could not calculate payment. Please check your inputs.",
+              title: t('calculationErrorTitle'),
+              description: t('calculationErrorDescription'),
               variant: "destructive",
             });
             setIsLoading(false);
@@ -68,7 +71,7 @@ export function LoanCalculator() {
                     <Card className="p-6 flex items-center justify-center min-h-[400px] w-full">
                         <div className="flex flex-col items-center gap-4">
                             <Loader2 className="h-8 w-8 animate-spin text-primary" />
-                            <p className="text-muted-foreground">Calculating your loan...</p>
+                            <p className="text-muted-foreground">{t('calculatingLoan')}</p>
                         </div>
                     </Card>
                 )}
@@ -81,8 +84,8 @@ export function LoanCalculator() {
                 {!isLoading && !summary && (
                     <Card className="p-6 flex items-center justify-center min-h-[400px] w-full border-dashed">
                         <div className="text-center">
-                            <h3 className="text-lg font-medium text-muted-foreground">Your loan details will appear here.</h3>
-                            <p className="text-sm text-muted-foreground">Fill out the form to get started.</p>
+                            <h3 className="text-lg font-medium text-muted-foreground">{t('detailsAppearHere')}</h3>
+                            <p className="text-sm text-muted-foreground">{t('fillFormToStart')}</p>
                         </div>
                     </Card>
                 )}

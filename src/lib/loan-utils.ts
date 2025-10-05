@@ -1,4 +1,7 @@
+
 import type { AmortizationScheduleEntry } from './types';
+import type { Language } from '@/context/language-context';
+
 
 export function calculateMonthlyPayment(principal: number, annualRate: number, termInMonths: number): number {
   if (principal <= 0 || annualRate < 0 || termInMonths <= 0) {
@@ -63,10 +66,19 @@ export function generateAmortizationSchedule(principal: number, annualRate: numb
     return schedule;
 }
 
-export function formatCurrency(amount: number): string {
-    return new Intl.NumberFormat('en-US', {
+export function formatCurrency(amount: number, lang: Language = 'en'): string {
+    const options: Intl.NumberFormatOptions = {
         style: 'currency',
-        currency: 'USD',
         minimumFractionDigits: 2,
-    }).format(amount);
+    };
+
+    if (lang === 'th') {
+        options.currency = 'THB';
+        // Thai Baht symbol is often not needed when locale is th-TH
+        // The browser will handle it.
+        return new Intl.NumberFormat('th-TH', options).format(amount);
+    }
+
+    options.currency = 'USD';
+    return new Intl.NumberFormat('en-US', options).format(amount);
 }

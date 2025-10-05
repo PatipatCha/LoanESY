@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useForm } from 'react-hook-form';
@@ -20,6 +21,7 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DollarSign, Percent, Calendar, Loader2 } from 'lucide-react';
 
 import type { LoanFormValues } from '@/lib/types';
+import { useTranslation } from '@/context/language-context';
 
 const formSchema = z.object({
   amount: z.coerce.number().positive({ message: "Loan amount must be a positive number." }).max(100000000, "Please enter a smaller amount."),
@@ -33,6 +35,7 @@ type LoanFormProps = {
 };
 
 export function LoanForm({ onSubmit, isLoading }: LoanFormProps) {
+  const { t } = useTranslation();
   const [termUnit, setTermUnit] = useState<'years' | 'months'>('years');
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -51,8 +54,8 @@ export function LoanForm({ onSubmit, isLoading }: LoanFormProps) {
   return (
     <Card className="shadow-lg">
       <CardHeader>
-        <CardTitle>Loan Details</CardTitle>
-        <CardDescription>Enter your loan information below.</CardDescription>
+        <CardTitle>{t('loanDetails')}</CardTitle>
+        <CardDescription>{t('enterLoanInfo')}</CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
@@ -62,7 +65,7 @@ export function LoanForm({ onSubmit, isLoading }: LoanFormProps) {
               name="amount"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Loan Amount</FormLabel>
+                  <FormLabel>{t('loanAmount')}</FormLabel>
                   <div className="relative">
                     <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                     <FormControl>
@@ -78,7 +81,7 @@ export function LoanForm({ onSubmit, isLoading }: LoanFormProps) {
               name="rate"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Annual Interest Rate</FormLabel>
+                  <FormLabel>{t('annualInterestRate')}</FormLabel>
                   <div className="relative">
                     <FormControl>
                       <Input type="number" step="0.01" placeholder="e.g., 5" className="pr-8" {...field} />
@@ -94,7 +97,7 @@ export function LoanForm({ onSubmit, isLoading }: LoanFormProps) {
               name="term"
               render={({ field }) => (
                 <FormItem>
-                   <FormLabel>Loan Term</FormLabel>
+                   <FormLabel>{t('loanTerm')}</FormLabel>
                    <div className="flex gap-2">
                     <div className="relative flex-grow">
                         <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -104,8 +107,8 @@ export function LoanForm({ onSubmit, isLoading }: LoanFormProps) {
                     </div>
                     <Tabs value={termUnit} onValueChange={(value) => setTermUnit(value as 'years' | 'months')} className="w-[150px]">
                       <TabsList className="grid w-full grid-cols-2 h-10">
-                          <TabsTrigger value="years">Years</TabsTrigger>
-                          <TabsTrigger value="months">Months</TabsTrigger>
+                          <TabsTrigger value="years">{t('years')}</TabsTrigger>
+                          <TabsTrigger value="months">{t('months')}</TabsTrigger>
                       </TabsList>
                     </Tabs>
                    </div>
@@ -117,10 +120,10 @@ export function LoanForm({ onSubmit, isLoading }: LoanFormProps) {
               {isLoading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Calculating...
+                  {t('calculating')}...
                 </>
               ) : (
-                'Calculate Loan'
+                t('calculateLoanButton')
               )}
             </Button>
           </form>
