@@ -6,6 +6,7 @@
   "loanDetails": "รายละเอียดสินเชื่อ",
   "enterLoanInfo": "ป้อนข้อมูลสินเชื่อของคุณด้านล่าง",
   "loanAmount": "จำนวนเงินกู้",
+  "downPayment": "จำนวนเงินดาวน์",
   "annualInterestRate": "อัตราดอกเบี้ยต่อปี",
   "loanTerm": "ระยะเวลาเงินกู้",
   "years": "ปี",

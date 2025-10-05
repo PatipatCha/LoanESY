@@ -25,8 +25,12 @@ import { useTranslation } from '@/context/language-context';
 
 const formSchema = z.object({
   amount: z.coerce.number().positive({ message: "Loan amount must be a positive number." }).max(100000000, "Please enter a smaller amount."),
+  downPayment: z.coerce.number().min(0, { message: "Down payment cannot be negative." }),
   rate: z.coerce.number().min(0, { message: "Interest rate cannot be negative." }).max(100, { message: "An interest rate above 100% is unlikely." }),
   term: z.coerce.number().int({ message: "Term must be a whole number." }).positive({ message: "Loan term must be a positive number." }).max(600, "Term is too long."),
+}).refine(data => data.amount > data.downPayment, {
+  message: "Down payment cannot be greater than the loan amount.",
+  path: ["downPayment"],
 });
 
 type LoanFormProps = {
@@ -42,6 +46,7 @@ export function LoanForm({ onSubmit, isLoading }: LoanFormProps) {
     resolver: zodResolver(formSchema),
     defaultValues: {
       amount: 10000,
+      downPayment: 0,
       rate: 5,
       term: 5,
     },
@@ -74,6 +79,26 @@ export function LoanForm({ onSubmit, isLoading }: LoanFormProps) {
                     )}
                     <FormControl>
                       <Input type="number" placeholder="e.g., 10000" className="pl-8" {...field} />
+                    </FormControl>
+                  </div>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="downPayment"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{t('downPayment')}</FormLabel>
+                  <div className="relative">
+                    {language === 'en' ? (
+                      <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    ) : (
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">฿</span>
+                    )}
+                    <FormControl>
+                      <Input type="number" placeholder="e.g., 2000" className="pl-8" {...field} />
                     </FormControl>
                   </div>
                   <FormMessage />

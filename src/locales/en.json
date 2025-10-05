@@ -6,6 +6,7 @@
   "loanDetails": "Loan Details",
   "enterLoanInfo": "Enter your loan information below.",
   "loanAmount": "Loan Amount",
+  "downPayment": "Down Payment",
   "annualInterestRate": "Annual Interest Rate",
   "loanTerm": "Loan Term",
   "years": "Years",
