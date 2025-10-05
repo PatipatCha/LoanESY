@@ -179,7 +179,7 @@ export function LoanForm({ onSubmit, isLoading }: LoanFormProps) {
           </form>
         </Form>
       </CardContent>
-       <CardFooter className={cn("bg-secondary/50 p-4 rounded-b-lg mt-6 -mx-6 -mb-6 transition-opacity", calculatedLoanAmount > 0 ? 'opacity-100' : 'opacity-50')}>
+       <CardFooter className={cn("bg-secondary/50 p-4 transition-opacity", calculatedLoanAmount > 0 ? 'opacity-100' : 'opacity-50')}>
         <div className="w-full">
             <p className="text-sm text-muted-foreground">{t('loanAmountToCalculate')}</p>
             <p className="text-2xl font-bold text-foreground">
