@@ -4,8 +4,7 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { useState, useEffect } from 'react';
-import { useWatch } from 'react-hook-form';
+import { useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -17,14 +16,12 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DollarSign, Percent, Calendar, Loader2 } from 'lucide-react';
 
 import type { LoanFormValues } from '@/lib/types';
 import { useTranslation } from '@/context/language-context';
-import { formatCurrency } from '@/lib/loan-utils';
-import { cn } from '@/lib/utils';
 
 
 const formSchema = z.object({
@@ -46,7 +43,6 @@ type LoanFormProps = {
 export function LoanForm({ onSubmit, isLoading }: LoanFormProps) {
   const { t, language } = useTranslation();
   const [termUnit, setTermUnit] = useState<'years' | 'months'>('years');
-  const [calculatedLoanAmount, setCalculatedLoanAmount] = useState(95000);
 
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -58,17 +54,6 @@ export function LoanForm({ onSubmit, isLoading }: LoanFormProps) {
       term: 5,
     },
   });
-
-  const watchedValues = useWatch({ control: form.control });
-
-  useEffect(() => {
-    const { totalCourseFee, personalFunds } = watchedValues;
-    if (typeof totalCourseFee === 'number' && typeof personalFunds === 'number' && totalCourseFee > personalFunds) {
-        setCalculatedLoanAmount(totalCourseFee - personalFunds);
-    } else {
-        setCalculatedLoanAmount(0);
-    }
-  }, [watchedValues]);
 
 
   function handleFormSubmit(values: z.infer<typeof formSchema>) {
@@ -179,14 +164,6 @@ export function LoanForm({ onSubmit, isLoading }: LoanFormProps) {
           </form>
         </Form>
       </CardContent>
-       <CardFooter className={cn("bg-secondary/50 p-4 transition-opacity", calculatedLoanAmount > 0 ? 'opacity-100' : 'opacity-50')}>
-        <div className="w-full">
-            <p className="text-sm text-muted-foreground">{t('loanAmountToCalculate')}</p>
-            <p className="text-2xl font-bold text-foreground">
-                {formatCurrency(calculatedLoanAmount, language)}
-            </p>
-        </div>
-      </CardFooter>
     </Card>
   );
 }
