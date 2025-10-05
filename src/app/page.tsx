@@ -15,10 +15,10 @@ export default function Home() {
         </div>
       <div className="container mx-auto px-4 py-8 md:py-12">
         <header className="text-center mb-8 md:mb-12">
-          <h1 className="text-4xl md:text-5xl font-headline font-bold text-foreground mb-2">
+          <h1 className="text-3xl md:text-5xl font-headline font-bold text-foreground mb-2">
             {t('loanEase')}
           </h1>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto">
             {t('heroDescription')}
           </p>
         </header>
