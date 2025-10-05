@@ -28,7 +28,7 @@ export function LoanCalculator() {
 
         await new Promise(resolve => setTimeout(resolve, 500));
 
-        const principal = data.amount - data.downPayment;
+        const principal = data.amount;
         const annualRate = data.rate;
         const termInMonths = data.termUnit === 'years' ? data.term * 12 : data.term;
         const termInYears = data.termUnit === 'years' ? data.term : data.term / 12;

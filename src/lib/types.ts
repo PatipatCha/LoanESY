@@ -1,6 +1,6 @@
+
 export type LoanFormValues = {
   amount: number;
-  downPayment: number;
   rate: number;
   term: number;
   termUnit: 'years' | 'months';
