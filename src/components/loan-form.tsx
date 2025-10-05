@@ -48,10 +48,10 @@ export function LoanForm({ onSubmit, isLoading }: LoanFormProps) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      totalCourseFee: 100000,
-      personalFunds: 5000,
-      rate: 5,
-      term: 5,
+      totalCourseFee: 180000,
+      personalFunds: 50000,
+      rate: 3.43,
+      term: 6,
     },
   });
 
@@ -92,7 +92,7 @@ export function LoanForm({ onSubmit, isLoading }: LoanFormProps) {
                       <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">฿</span>
                     )}
                     <FormControl>
-                      <Input type="number" placeholder="e.g., 100000" className="pl-8" {...field} />
+                      <Input type="number" placeholder="e.g., 180000" className="pl-8" {...field} />
                     </FormControl>
                   </div>
                   <FormMessage />
@@ -113,7 +113,7 @@ export function LoanForm({ onSubmit, isLoading }: LoanFormProps) {
                       <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">฿</span>
                     )}
                     <FormControl>
-                      <Input type="number" placeholder="e.g., 5000" className="pl-8" {...field} />
+                      <Input type="number" placeholder="e.g., 50000" className="pl-8" {...field} />
                     </FormControl>
                   </div>
                   <FormMessage />
@@ -143,7 +143,7 @@ export function LoanForm({ onSubmit, isLoading }: LoanFormProps) {
                   <FormLabel>{t('annualInterestRate')}</FormLabel>
                   <div className="relative">
                     <FormControl>
-                      <Input type="number" step="0.01" placeholder="e.g., 5" className="pr-8" {...field} />
+                      <Input type="number" step="0.01" placeholder="e.g., 3.43" className="pr-8" {...field} />
                     </FormControl>
                     <Percent className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                   </div>
@@ -161,7 +161,7 @@ export function LoanForm({ onSubmit, isLoading }: LoanFormProps) {
                     <div className="relative flex-grow">
                         <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                         <FormControl>
-                        <Input type="number" placeholder={termUnit === 'years' ? 'e.g., 5' : 'e.g., 60'} className="pl-8" {...field} />
+                        <Input type="number" placeholder={termUnit === 'years' ? 'e.g., 6' : 'e.g., 72'} className="pl-8" {...field} />
                         </FormControl>
                     </div>
                     <Tabs value={termUnit} onValueChange={(value) => setTermUnit(value as 'years' | 'months')} className="w-[150px]">
