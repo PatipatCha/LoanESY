@@ -7,10 +7,11 @@ const PLANS_KEY = 'plans';
 
 // Helper function to get all plans
 async function getAllPlans(): Promise<SavedPlan[]> {
-  const planIds = await kv.zrange(PLANS_KEY, 0, -1);
+  const planIds = await kv.zrange(PLANS_KEY, 0, -1, { rev: true });
   if (planIds.length === 0) {
     return [];
   }
+  // The type parameter for mget needs to be SavedPlan, not SavedPlan[]
   const plans = await kv.mget<SavedPlan[]>(...planIds.map(id => `plan:${id}`));
   return plans.filter((p): p is SavedPlan => p !== null);
 }
