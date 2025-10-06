@@ -1,21 +1,21 @@
 
 import { NextResponse } from 'next/server';
-import { getDb } from '@/lib/db';
+import { updatePlan } from '@/lib/db';
 
 export async function PUT(request: Request, { params }: { params: { id: string } }) {
-  const db = await getDb();
-  const { id } = params;
-  const { name, formData } = await request.json();
+  try {
+    const { id } = params;
+    const { name, formData } = await request.json();
 
-  const planIndex = db.data.plans.findIndex((p) => p.id === id);
+    const updatedPlan = await updatePlan(id, name, formData);
 
-  if (planIndex === -1) {
-    return NextResponse.json({ error: 'Plan not found' }, { status: 404 });
+    if (!updatedPlan) {
+      return NextResponse.json({ error: 'Plan not found' }, { status: 404 });
+    }
+
+    return NextResponse.json(updatedPlan);
+  } catch (error) {
+    console.error(`Failed to update plan ${params.id}:`, error);
+    return NextResponse.json({ error: 'Failed to update plan' }, { status: 500 });
   }
-
-  const updatedPlan = { ...db.data.plans[planIndex], name, formData };
-  db.data.plans[planIndex] = updatedPlan;
-  await db.write();
-
-  return NextResponse.json(updatedPlan);
 }

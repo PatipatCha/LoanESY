@@ -1,24 +1,29 @@
 
 import { NextResponse } from 'next/server';
-import { getDb } from '@/lib/db';
-import { v4 as uuidv4 } from 'uuid';
+import { getPlans, addPlan } from '@/lib/db';
 
 export async function GET() {
-  const db = await getDb();
-  return NextResponse.json(db.data.plans);
+  try {
+    const plans = await getPlans();
+    return NextResponse.json(plans);
+  } catch (error) {
+    console.error('Failed to get plans:', error);
+    return NextResponse.json({ error: 'Failed to retrieve plans' }, { status: 500 });
+  }
 }
 
 export async function POST(request: Request) {
-  const db = await getDb();
-  const { name, formData } = await request.json();
+  try {
+    const { name, formData } = await request.json();
 
-  if (!name || !formData) {
-    return NextResponse.json({ error: 'Missing name or formData' }, { status: 400 });
+    if (!name || !formData) {
+      return NextResponse.json({ error: 'Missing name or formData' }, { status: 400 });
+    }
+
+    const newPlan = await addPlan(name, formData);
+    return NextResponse.json(newPlan, { status: 201 });
+  } catch (error) {
+    console.error('Failed to create plan:', error);
+    return NextResponse.json({ error: 'Failed to create plan' }, { status: 500 });
   }
-
-  const newPlan = { id: uuidv4(), name, formData };
-  db.data.plans.push(newPlan);
-  await db.write();
-
-  return NextResponse.json(newPlan, { status: 201 });
 }
