@@ -28,7 +28,7 @@ export async function addPlan(name: string, formData: any) {
   const newPlan: SavedPlan = { id, name, formData };
 
   await kv.set(`plan:${id}`, newPlan);
-  await kv.zadd(PLANS_KEY, { score: Date.now(), member: id });
+  await kv.zadd(PLANS_KEY, { score: Date.now(), member: `plan:${id}` });
 
   return newPlan;
 }
