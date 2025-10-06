@@ -21,7 +21,10 @@ export async function POST(request: Request) {
     }
 
     const newPlan = await addPlan(name, formData);
-    return NextResponse.json(newPlan, { status: 201 });
+    return new Response(JSON.stringify(newPlan), {
+      status: 201,
+      headers: { 'Content-Type': 'application/json' },
+    });
   } catch (error) {
     console.error('Failed to create plan:', error);
     return NextResponse.json({ error: 'Failed to create plan' }, { status: 500 });
