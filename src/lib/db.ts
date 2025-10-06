@@ -12,7 +12,7 @@ async function getAllPlans(): Promise<SavedPlan[]> {
   if (planIds.length === 0) {
     return [];
   }
-  // The type parameter for mget needs to be SavedPlan, not SavedPlan[]
+  // The type parameter for mget needs to be SavedPlan[], not SavedPlan
   const plans = await kv.mget<SavedPlan[]>(...planIds.map(id => `plan:${id}`));
   return plans.filter((p): p is SavedPlan => p !== null);
 }
