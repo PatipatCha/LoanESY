@@ -48,5 +48,8 @@
   "error": "Error",
   "planDeletedSuccess": "The plan has been deleted successfully.",
   "planDeletedError": "Failed to delete the plan.",
-  "noPlansSaved": "No plans saved yet."
+  "noPlansSaved": "No plans saved yet.",
+  "schedule": "Schedule",
+  "graph": "Graph",
+  "monthAbbreviation": "M"
 }

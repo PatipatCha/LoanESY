@@ -48,5 +48,8 @@
   "error": "ข้อผิดพลาด",
   "planDeletedSuccess": "ลบแผนสำเร็จแล้ว",
   "planDeletedError": "ไม่สามารถลบแผนได้",
-  "noPlansSaved": "ยังไม่มีแผนที่บันทึกไว้"
+  "noPlansSaved": "ยังไม่มีแผนที่บันทึกไว้",
+  "schedule": "ตาราง",
+  "graph": "กราฟ",
+  "monthAbbreviation": "ด."
 }
