@@ -1,47 +1,80 @@
+import { Collection, Db, MongoClient, ObjectId } from 'mongodb';
+import type { LoanFormValues, SavedPlan } from './types';
+import clientPromise from './mongodb';
 
-import { kv } from '@vercel/kv';
-import type { SavedPlan } from './types';
-import { v4 as uuidv4 } from 'uuid';
+let client: MongoClient;
+let db: Db;
+let plans: Collection<SavedPlan>;
 
-
-const PLANS_KEY = 'plans';
-
-// Helper function to get all plans
-async function getAllPlans(): Promise<SavedPlan[]> {
-  const planIds = await kv.zrange(PLANS_KEY, 0, -1, { rev: true });
-  if (planIds.length === 0) {
-    return [];
+async function init() {
+  if (db) {
+    return;
   }
-  // The type parameter for mget needs to be SavedPlan[], not SavedPlan
-  const plans = await kv.mget<SavedPlan[]>(...planIds.map(id => `plan:${id}`));
-  return plans.filter((p): p is SavedPlan => p !== null);
-}
-
-// Get all plans
-export async function getPlans() {
-  return await getAllPlans();
-}
-
-// Add a new plan
-export async function addPlan(name: string, formData: any) {
-  const id = uuidv4();
-  const newPlan: SavedPlan = { id, name, formData };
-
-  await kv.set(`plan:${id}`, newPlan);
-  await kv.zadd(PLANS_KEY, { score: Date.now(), member: `plan:${id}` });
-
-  return newPlan;
-}
-
-// Update an existing plan
-export async function updatePlan(id: string, name: string, formData: any) {
-  const existingPlan = await kv.get(`plan:${id}`);
-  if (!existingPlan) {
-    return null;
+  try {
+    client = await clientPromise;
+    db = client.db();
+    plans = db.collection('plans');
+  } catch (error) {
+    throw new Error('Failed to connect to the database.');
   }
+}
 
-  const updatedPlan: SavedPlan = { id, name, formData };
-  await kv.set(`plan:${id}`, updatedPlan);
+(async () => {
+  await init();
+})();
 
-  return updatedPlan;
+export async function getPlans(): Promise<SavedPlan[]> {
+  try {
+    if (!plans) await init();
+    const result = await plans
+      .find({})
+      .map(plan => ({ ...plan, id: plan._id.toString() }))
+      .toArray();
+      
+    // The mongo _id is converted to a string id. We need to tell TS to delete the _id property.
+    return result.map(({ _id, ...rest }) => rest) as SavedPlan[];
+  } catch (error) {
+    console.error('Failed to get plans:', error);
+    throw new Error('Failed to retrieve plans.');
+  }
+}
+
+export async function addPlan(name: string, formData: LoanFormValues) {
+  try {
+    if (!plans) await init();
+    const result = await plans.insertOne({ name, formData });
+    return {
+      ...{ name, formData },
+      id: result.insertedId.toString(),
+    };
+  } catch (error) {
+    console.error('Failed to create plan:', error);
+    throw new Error('Failed to create plan.');
+  }
+}
+
+export async function updatePlan(id: string, name: string, formData: LoanFormValues) {
+  try {
+    if (!plans) await init();
+    
+    if (!ObjectId.isValid(id)) {
+      throw new Error('Invalid plan ID format.');
+    }
+    
+    const result = await plans.findOneAndUpdate(
+      { _id: new ObjectId(id) },
+      { $set: { name, formData } },
+      { returnDocument: 'after' }
+    );
+
+    if (!result) {
+      return null;
+    }
+
+    const { _id, ...updatedPlan } = result;
+    return { ...updatedPlan, id: _id.toString() } as SavedPlan;
+  } catch (error) {
+    console.error(`Failed to update plan ${id}:`, error);
+    throw new Error('Failed to update plan.');
+  }
 }

@@ -1,3 +1,4 @@
+import type { ObjectId } from 'mongodb';
 
 export type LoanFormValues = {
   totalCourseFee: number;
@@ -24,7 +25,11 @@ export type LoanSummaryData = {
   totalPayment: number;
 };
 
+// MongoDB will add the `_id` property. We make it optional here
+// because we will be deleting it before sending it to the client.
+// The client-side code will use the `id` property.
 export type SavedPlan = {
+  _id?: ObjectId;
   id: string;
   name: string;
   formData: LoanFormValues;

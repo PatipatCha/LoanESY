@@ -8,7 +8,8 @@ export async function GET() {
     return NextResponse.json(plans);
   } catch (error) {
     console.error('Failed to get plans:', error);
-    return NextResponse.json({ error: 'Failed to retrieve plans' }, { status: 500 });
+    const errorMessage = error instanceof Error ? error.message : 'Failed to retrieve plans';
+    return NextResponse.json({ error: errorMessage }, { status: 500 });
   }
 }
 
@@ -21,12 +22,10 @@ export async function POST(request: Request) {
     }
 
     const newPlan = await addPlan(name, formData);
-    return new Response(JSON.stringify(newPlan), {
-      status: 201,
-      headers: { 'Content-Type': 'application/json' },
-    });
+    return NextResponse.json(newPlan, { status: 201 });
   } catch (error) {
     console.error('Failed to create plan:', error);
-    return NextResponse.json({ error: 'Failed to create plan' }, { status: 500 });
+    const errorMessage = error instanceof Error ? error.message : 'Failed to create plan';
+    return NextResponse.json({ error: errorMessage }, { status: 500 });
   }
 }

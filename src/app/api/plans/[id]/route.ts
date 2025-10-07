@@ -16,6 +16,7 @@ export async function PUT(request: Request, { params }: { params: { id: string }
     return NextResponse.json(updatedPlan);
   } catch (error) {
     console.error(`Failed to update plan ${params.id}:`, error);
-    return NextResponse.json({ error: 'Failed to update plan' }, { status: 500 });
+    const errorMessage = error instanceof Error ? error.message : 'Failed to update plan';
+    return NextResponse.json({ error: errorMessage }, { status: 500 });
   }
 }
