@@ -23,6 +23,16 @@ async function init() {
   await init();
 })();
 
+export async function getDbConnectionStatus(): Promise<boolean> {
+  try {
+    await clientPromise;
+    return true;
+  } catch (error) {
+    console.error("Database connection failed:", error);
+    return false;
+  }
+}
+
 export async function getPlans(): Promise<SavedPlan[]> {
   try {
     if (!plans) await init();
@@ -73,7 +83,8 @@ export async function updatePlan(id: string, name: string, formData: LoanFormVal
 
     const { _id, ...updatedPlan } = result;
     return { ...updatedPlan, id: _id.toString() } as SavedPlan;
-  } catch (error) {
+  } catch (error)
+ {
     console.error(`Failed to update plan ${id}:`, error);
     throw new Error('Failed to update plan.');
   }
