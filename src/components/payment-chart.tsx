@@ -59,12 +59,15 @@ export function PaymentChart({ data }: { data: AmortizationScheduleEntry[] }) {
                     cursor={false}
                     content={
                         <ChartTooltipContent
-                            formatter={(value, name) => (
-                                <div className="flex flex-col">
-                                    <span className="text-xs text-muted-foreground">{chartConfig[name as keyof typeof chartConfig].label}</span>
-                                    <span className="font-bold">{formatCurrency(Number(value), language)}</span>
-                                </div>
-                            )}
+                            formatter={(value, name, props) => {
+                                const dataKey = props.dataKey as keyof typeof chartConfig;
+                                return (
+                                    <div className="flex flex-col">
+                                        <span className="text-xs text-muted-foreground">{chartConfig[dataKey]?.label || name}</span>
+                                        <span className="font-bold">{formatCurrency(Number(value), language)}</span>
+                                    </div>
+                                )
+                            }}
                             labelFormatter={(label) => `${t('month')} ${label}`}
                         />
                     }
@@ -76,7 +79,7 @@ export function PaymentChart({ data }: { data: AmortizationScheduleEntry[] }) {
                     stroke={chartConfig.remainingBalance.color}
                     strokeWidth={2}
                     dot={false}
-                    name={chartConfig.remainingBalance.label}
+                    name="remainingBalance"
                 />
                 <Line
                     dataKey="principal"
@@ -84,7 +87,7 @@ export function PaymentChart({ data }: { data: AmortizationScheduleEntry[] }) {
                     stroke={chartConfig.principal.color}
                     strokeWidth={2}
                     dot={false}
-                    name={chartConfig.principal.label}
+                    name="principal"
                 />
                 <Line
                     dataKey="interest"
@@ -92,7 +95,7 @@ export function PaymentChart({ data }: { data: AmortizationScheduleEntry[] }) {
                     stroke={chartConfig.interest.color}
                     strokeWidth={2}
                     dot={false}
-                    name={chartConfig.interest.label}
+                    name="interest"
                 />
             </LineChart>
         </ChartContainer>
