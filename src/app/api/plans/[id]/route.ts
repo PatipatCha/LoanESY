@@ -4,7 +4,7 @@ import { updatePlan, deletePlan } from '@/lib/db';
 
 export async function PUT(request: Request, { params }: { params: { id: string } }) {
   try {
-    const { id } = params;
+    const id = params.id;
     const { name, formData } = await request.json();
 
     const updatedPlan = await updatePlan(id, name, formData);
@@ -23,7 +23,7 @@ export async function PUT(request: Request, { params }: { params: { id: string }
 
 export async function DELETE(request: Request, { params }: { params: { id: string } }) {
   try {
-    const { id } = params;
+    const id = params.id;
     const result = await deletePlan(id);
 
     if (!result) {
