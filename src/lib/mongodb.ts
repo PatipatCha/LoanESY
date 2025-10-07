@@ -5,13 +5,13 @@ const uri = process.env.MONGODB_URI
 const options = {}
 
 let client: MongoClient | undefined
-let clientPromise: Promise<MongoClient> | undefined
+let clientPromise: Promise<MongoClient>
 
 if (!process.env.MONGODB_URI) {
   console.warn('Missing environment variable: "MONGODB_URI". App will run in offline mode.');
-  // In offline mode, we'll create a dummy promise that will never resolve.
-  // This prevents the app from crashing, and our connection check will fail gracefully.
-  clientPromise = new Promise(() => {});
+  // In offline mode, we'll create a promise that rejects immediately.
+  // This prevents long timeouts and allows the connection check to fail gracefully.
+  clientPromise = Promise.reject(new Error('Missing environment variable: "MONGODB_URI"'));
 } else {
   if (process.env.NODE_ENV === 'development') {
     // In development mode, use a global variable so that the value
