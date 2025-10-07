@@ -40,5 +40,13 @@
   "planName": "ชื่อแผน",
   "cancel": "ยกเลิก",
   "save": "บันทึก",
-  "savePlan": " "
+  "savePlan": " ",
+  "deletePlanTitle": "ลบแผน",
+  "deletePlanDescription": "คุณแน่ใจหรือไม่ว่าต้องการลบแผนนี้? การกระทำนี้ไม่สามารถย้อนกลับได้",
+  "delete": "ลบ",
+  "success": "สำเร็จ",
+  "error": "ข้อผิดพลาด",
+  "planDeletedSuccess": "ลบแผนสำเร็จแล้ว",
+  "planDeletedError": "ไม่สามารถลบแผนได้",
+  "noPlansSaved": "ยังไม่มีแผนที่บันทึกไว้"
 }

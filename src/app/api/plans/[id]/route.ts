@@ -1,6 +1,6 @@
 
 import { NextResponse } from 'next/server';
-import { updatePlan } from '@/lib/db';
+import { updatePlan, deletePlan } from '@/lib/db';
 
 export async function PUT(request: Request, { params }: { params: { id: string } }) {
   try {
@@ -17,6 +17,23 @@ export async function PUT(request: Request, { params }: { params: { id: string }
   } catch (error) {
     console.error(`Failed to update plan ${params.id}:`, error);
     const errorMessage = error instanceof Error ? error.message : 'Failed to update plan';
+    return NextResponse.json({ error: errorMessage }, { status: 500 });
+  }
+}
+
+export async function DELETE(request: Request, { params }: { params: { id: string } }) {
+  try {
+    const { id } = params;
+    const result = await deletePlan(id);
+
+    if (!result) {
+      return NextResponse.json({ error: 'Plan not found' }, { status: 404 });
+    }
+
+    return NextResponse.json({ message: 'Plan deleted successfully' }, { status: 200 });
+  } catch (error) {
+    console.error(`Failed to delete plan ${params.id}:`, error);
+    const errorMessage = error instanceof Error ? error.message : 'Failed to delete plan';
     return NextResponse.json({ error: errorMessage }, { status: 500 });
   }
 }

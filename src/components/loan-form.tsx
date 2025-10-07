@@ -8,6 +8,23 @@ import { useState, useEffect } from 'react';
 
 import { Button } from '@/components/ui/button';
 import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  DropdownMenuSeparator,
+} from '@/components/ui/dropdown-menu';
+import {
   Dialog,
   DialogContent,
   DialogHeader,
@@ -16,13 +33,6 @@ import {
   DialogFooter,
   DialogClose,
 } from '@/components/ui/dialog';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 import {
   Form,
   FormControl,
@@ -33,7 +43,7 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { DollarSign, Percent, Calendar, Loader2, PlusCircle, Save } from 'lucide-react';
+import { DollarSign, Percent, Calendar, Loader2, PlusCircle, Save, Trash2, ChevronDown } from 'lucide-react';
 
 import type { LoanFormValues, SavedPlan } from '@/lib/types';
 import { useTranslation } from '@/context/language-context';
@@ -73,6 +83,7 @@ export function LoanForm({ onSubmit, isLoading, initialValues, currentPlan, onPl
   const [newPlanName, setNewPlanName] = useState('');
   const [isSaving, setIsSaving] = useState(false);
   const [isNewPlanDialogOpen, setIsNewPlanDialogOpen] = useState(false);
+  const [planToDelete, setPlanToDelete] = useState<SavedPlan | null>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -116,12 +127,32 @@ export function LoanForm({ onSubmit, isLoading, initialValues, currentPlan, onPl
     onSubmit({ ...values, termUnit });
   }
   
-  const handleSelectPlan = (planId: string) => {
-    const plan = plans.find(p => p.id === planId);
-    if (plan) {
-      onPlanSelected(plan);
+  const handleSelectPlan = (plan: SavedPlan) => {
+    onPlanSelected(plan);
+  };
+
+  const handleDeletePlan = async () => {
+    if (!planToDelete) return;
+    try {
+      const response = await fetch(`/api/plans/${planToDelete.id}`, {
+        method: 'DELETE',
+      });
+      if (response.ok) {
+        toast({ title: t('success'), description: t('planDeletedSuccess') });
+        setPlanToDelete(null);
+        await fetchPlans();
+        if (currentPlan?.id === planToDelete.id) {
+          onPlanSelected({ id: '', name: '', formData: defaultFormValues });
+        }
+      } else {
+        const errorData = await response.json();
+        toast({ title: t('error'), description: errorData.error || t('planDeletedError'), variant: 'destructive' });
+      }
+    } catch (error) {
+       toast({ title: t('error'), description: t('planDeletedError'), variant: 'destructive' });
     }
   };
+
 
   const savePlan = async (isNew: boolean) => {
     setIsSaving(true);
@@ -185,16 +216,29 @@ export function LoanForm({ onSubmit, isLoading, initialValues, currentPlan, onPl
         <div className="space-y-2">
             <FormLabel>{t('savedPlans')}</FormLabel>
             <div className="flex gap-2">
-                <Select onValueChange={handleSelectPlan} value={currentPlan?.id}>
-                    <SelectTrigger>
-                        <SelectValue placeholder={t('selectPlan')} />
-                    </SelectTrigger>
-                    <SelectContent>
-                        {plans.map(plan => (
-                            <SelectItem key={plan.id} value={plan.id}>{plan.name}</SelectItem>
-                        ))}
-                    </SelectContent>
-                </Select>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" className="flex-1 justify-between">
+                      {currentPlan?.name || t('selectPlan')}
+                      <ChevronDown className="h-4 w-4 opacity-50" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="w-[var(--radix-dropdown-menu-trigger-width)]">
+                    {plans.length === 0 ? (
+                      <DropdownMenuItem disabled>{t('noPlansSaved')}</DropdownMenuItem>
+                    ) : (
+                      plans.map(plan => (
+                        <DropdownMenuItem key={plan.id} onSelect={(e) => e.preventDefault()} className="flex justify-between items-center">
+                           <span onClick={() => handleSelectPlan(plan)} className="flex-1 cursor-pointer">{plan.name}</span>
+                           <Button variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground hover:text-destructive" onClick={() => setPlanToDelete(plan)}>
+                                <Trash2 className="h-4 w-4" />
+                           </Button>
+                        </DropdownMenuItem>
+                      ))
+                    )}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+
                  <Dialog open={isNewPlanDialogOpen} onOpenChange={setIsNewPlanDialogOpen}>
                     <DialogTrigger asChild>
                         <Button variant="outline" className="h-10"><PlusCircle className="mr-2 h-4 w-4"/> {t('newPlan')}</Button>
@@ -221,7 +265,7 @@ export function LoanForm({ onSubmit, isLoading, initialValues, currentPlan, onPl
                         </DialogFooter>
                     </DialogContent>
                 </Dialog>
-                <Button type="button" onClick={() => savePlan(false)} disabled={!currentPlan || isSaving} className="h-10">
+                <Button type="button" onClick={() => savePlan(false)} disabled={!currentPlan || !currentPlan.id || isSaving} className="h-10">
                     <Save className="mr-2 h-4 w-4"/> {t('savePlan')}
                 </Button>
             </div>
@@ -335,6 +379,20 @@ export function LoanForm({ onSubmit, isLoading, initialValues, currentPlan, onPl
           )}
         </Button>
       </form>
+       <AlertDialog open={!!planToDelete} onOpenChange={() => setPlanToDelete(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{t('deletePlanTitle')}</AlertDialogTitle>
+            <AlertDialogDescription>
+              {t('deletePlanDescription')}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>{t('cancel')}</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDeletePlan}>{t('delete')}</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </Form>
   );
 }

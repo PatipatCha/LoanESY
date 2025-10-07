@@ -8,10 +8,10 @@ let db: Db;
 let plans: Collection<SavedPlan>;
 
 async function init() {
-  if (db) {
-    return;
-  }
   try {
+    if (db) {
+      return;
+    }
     client = await clientPromise;
     db = client.db();
     plans = db.collection('plans');
@@ -23,7 +23,6 @@ async function init() {
 export async function getDbConnectionStatus(): Promise<boolean> {
   try {
     await init();
-    // Use the admin database to ping the server
     await client.db().admin().ping();
     return true;
   } catch (error) {
@@ -40,7 +39,6 @@ export async function getPlans(): Promise<SavedPlan[]> {
       .map(plan => ({ ...plan, id: plan._id.toString() }))
       .toArray();
       
-    // The mongo _id is converted to a string id. We need to tell TS to delete the _id property.
     return result.map(({ _id, ...rest }) => rest) as SavedPlan[];
   } catch (error) {
     console.error('Failed to get plans:', error);
@@ -86,5 +84,26 @@ export async function updatePlan(id: string, name: string, formData: LoanFormVal
  {
     console.error(`Failed to update plan ${id}:`, error);
     throw new Error('Failed to update plan.');
+  }
+}
+
+export async function deletePlan(id: string) {
+  try {
+    if (!plans) await init();
+
+    if (!ObjectId.isValid(id)) {
+      throw new Error('Invalid plan ID format.');
+    }
+
+    const result = await plans.deleteOne({ _id: new ObjectId(id) });
+
+    if (result.deletedCount === 0) {
+      return null;
+    }
+    
+    return { success: true };
+  } catch (error) {
+    console.error(`Failed to delete plan ${id}:`, error);
+    throw new Error('Failed to delete plan.');
   }
 }
