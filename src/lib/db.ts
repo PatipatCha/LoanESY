@@ -19,13 +19,11 @@ async function init() {
   }
 }
 
-(async () => {
-  await init();
-})();
-
 export async function getDbConnectionStatus(): Promise<boolean> {
   try {
-    await clientPromise;
+    await init();
+    // Use the admin database to ping the server
+    await client.db().admin().ping();
     return true;
   } catch (error) {
     console.error("Database connection failed:", error);
